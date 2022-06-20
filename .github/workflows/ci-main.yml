@@ -60,4 +60,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: hugodegrossi/exeat.boilerplate-service-main:latest
+          tags: hugodegrossi/exeat.api-gateway-main:latest
