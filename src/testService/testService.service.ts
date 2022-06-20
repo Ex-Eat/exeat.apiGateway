@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ClientProxy, ClientProxyFactory, Transport } from "@nestjs/microservices";
 import {Observable} from "rxjs";
+import {config} from "../config";
 
 @Injectable()
 export class TestServiceService {
@@ -10,8 +11,8 @@ export class TestServiceService {
         this.testServiceClientService = ClientProxyFactory.create({
             transport: Transport.TCP,
             options: {
-                host: '127.0.0.1',
-                port: 8123
+                host: 'exeat.boilerplate-service',
+                port: +config.BOILERPLATE_SERVICE_PORT
             }
         })
     }
@@ -28,5 +29,10 @@ export class TestServiceService {
 
     async postItem(): Promise<Observable<number>> {
         return this.testServiceClientService.send<number>('postItem', '')
+    }
+
+
+    async getAlive(): Promise<Observable<string>> {
+        return this.testServiceClientService.send<string>('alive', '')
     }
 }

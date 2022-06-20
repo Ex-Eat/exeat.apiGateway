@@ -23,4 +23,10 @@ export class TestServiceController {
         // We should check if the user is connected
         return this.testServiceService.getItems();
     }
+
+    @Get('alive')
+    async getAlive() {
+        // We should check if the user is connected
+        return this.testServiceService.getAlive();
+    }
 }

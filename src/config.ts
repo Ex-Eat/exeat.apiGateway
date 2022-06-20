@@ -1,5 +1,6 @@
 export const config = {
-    BASE_URL: process.env.EXEAT_BASE_URL || 'http://localhost:8080',
     APP_ENV: process.env.APP_ENV || 'PREPROD',
-    APP_PORT: process.env.APP_PORT || '3001',
+    APP_PORT: process.env.APP_PORT || '3005',
+    BOILERPLATE_SERVICE_PORT: process.env.BOILERPLATE_SERVICE_PORT || '8200',
+    BOILERPLATE_SERVICE_HOST: process.env.BOILERPLATE_SERVICE_HOST || '127.0.0.1',
 };
