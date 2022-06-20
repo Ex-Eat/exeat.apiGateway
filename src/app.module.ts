@@ -1,18 +1,11 @@
 import {Module} from '@nestjs/common';
 import {AppController} from './app.controller';
 import {AppService} from './app.service';
-import {AuthModule} from './auth/auth.module';
-import {MongooseModule} from '@nestjs/mongoose';
-import {config} from "./config";
-import { BoilerplateModule } from './boilerplate/boilerplate.module';
+import {TestServiceModule} from "./testService/testService.module";
 
 @Module({
     imports: [
-        AuthModule,
-        BoilerplateModule,
-        //MongooseModule.forRoot(`mongodb://${config.DB_USERNAME}:${config.DB_PASSWORD}@${config.DB_HOST}:${config.DB_PORT}/${config.DB_NAME}`),
-        MongooseModule.forRoot(`mongodb://${config.DB_HOST}:${config.DB_PORT}/${config.DB_NAME}`),
-        BoilerplateModule
+        TestServiceModule,
     ],
     controllers: [AppController],
     providers: [AppService],
