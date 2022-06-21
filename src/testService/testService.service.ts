@@ -11,8 +11,8 @@ export class TestServiceService {
         this.testServiceClientService = ClientProxyFactory.create({
             transport: Transport.TCP,
             options: {
-                host: 'exeat.boilerplate-service',
-                port: +config.BOILERPLATE_SERVICE_PORT
+                host: config.TEMPLATE_SERVICE_HOST,
+                port: +config.TEMPLATE_SERVICE_PORT
             }
         })
     }
