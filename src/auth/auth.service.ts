@@ -55,4 +55,9 @@ export class AuthService {
 	getLoggedUser(accessToken: string): Observable<object> {
 		return this.authMS.send<object>({ cmd: 'auth/getLoggedUser' }, { accessToken });
 	}
+
+
+	async getAlive(): Promise<Observable<string>> {
+		return this.authMS.send<string>({ cmd: 'alive' }, '');
+	}
 }
