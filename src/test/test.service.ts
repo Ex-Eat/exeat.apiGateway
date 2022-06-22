@@ -1,9 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
-	ClientProxy,
-	ClientProxyFactory,
-	Transport,
-} from '@nestjs/microservices';
+import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import { config } from '../config';
 
@@ -22,18 +18,18 @@ export class TestService {
 	}
 
 	async sumNumbers(data: Array<number>): Promise<Observable<number>> {
-		return this.testServiceClientService.send<number>({ cmd: 'sum' }, data);
+		return this.testServiceClientService.send<number>('sum', data);
 	}
 
 	async getItems(): Promise<Observable<number>> {
-		return this.testServiceClientService.send<number>({ cmd: 'getItems' }, '');
+		return this.testServiceClientService.send<number>('getItems', '');
 	}
 
 	async postItem(): Promise<Observable<number>> {
-		return this.testServiceClientService.send<number>({ cmd: 'postItem' }, '');
+		return this.testServiceClientService.send<number>('postItem', '');
 	}
 
 	async getAlive(): Promise<Observable<string>> {
-		return this.testServiceClientService.send<string>({ cmd: 'alive' }, '');
+		return this.testServiceClientService.send<string>('alive', '');
 	}
 }

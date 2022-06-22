@@ -7,9 +7,7 @@ export class TestController {
 	constructor(private readonly testServiceService: TestService) {}
 
 	@Get('sum')
-	async getSum(
-		@Body('data') data: Array<number>,
-	): Promise<Observable<number>> {
+	async getSum(@Body('data') data: Array<number>): Promise<Observable<number>> {
 		// We should check if the user is connected
 		return this.testServiceService.sumNumbers(data);
 	}
