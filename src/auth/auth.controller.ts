@@ -48,8 +48,8 @@ export class AuthController {
 	}
 
 	@Get('alive')
+	@UseGuards(AuthenticatedGuard)
 	async getAlive(@Req() req) {
-		console.log(req.cookies);
 		return this._service.getAlive();
 	}
 }
