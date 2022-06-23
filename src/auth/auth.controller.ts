@@ -48,7 +48,6 @@ export class AuthController {
 	}
 
 	@Get('alive')
-	@UseGuards(AuthenticatedGuard)
 	async getAlive(@Req() req) {
 		return this._service.getAlive();
 	}
