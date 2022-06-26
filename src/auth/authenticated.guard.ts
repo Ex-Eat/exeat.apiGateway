@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
-import { HttpErrorsEnum } from '../_enums/http-errors-enum';
+import { HttpErrorsEnum } from '../_enums/http-errors.enum';
 import { AuthService } from './auth.service';
 import { JwtPayload } from '../_dto/JwtPayload';
 import { lastValueFrom } from 'rxjs';
