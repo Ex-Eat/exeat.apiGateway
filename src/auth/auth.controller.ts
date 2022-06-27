@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Headers, Res, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ICreateUserDto } from '../_dto/IUserDto';
+import { ICreateUserDto, IUserDto } from '../_dto/IUserDto';
 import { lastValueFrom } from 'rxjs';
 import { ITokenDto } from '../_dto/ITokenDto';
 import { UnauthenticatedGuard } from './unauthenticated.guard';
@@ -9,6 +9,18 @@ import { AuthenticatedGuard } from './authenticated.guard';
 @Controller('auth')
 export class AuthController {
 	constructor(private _service: AuthService) {}
+
+	@Get('user')
+	@UseGuards(AuthenticatedGuard)
+	async user(@Req() req): Promise<IUserDto> {
+		const user = await lastValueFrom(this._service.getLoggedUser(req.cookies.access_token));
+		if (typeof user === 'string') {
+			return null;
+		} else {
+			const { sub, ...rest } = user;
+			return rest;
+		}
+	}
 
 	@Post('login')
 	@UseGuards(UnauthenticatedGuard)
@@ -20,7 +32,7 @@ export class AuthController {
 			.cookie('refresh_token', tokens.refreshToken, {
 				httpOnly: true,
 			})
-			.json({ message: 'Successfully authenticated' })
+			.json(tokens.user)
 			.send();
 	}
 
@@ -36,20 +48,20 @@ export class AuthController {
 		@Body() user: ICreateUserDto,
 		@Headers('authorization') authorization: string,
 		@Res({ passthrough: true }) res,
-	): Promise<Partial<ITokenDto>> {
+	) {
 		const tokens: ITokenDto = await lastValueFrom<ITokenDto>(this._service.signup(user, authorization));
 		res.cookie('access_token', tokens.accessToken, {
 			httpOnly: true,
-		});
-		res.cookie('refresh_token', tokens.refreshToken, {
-			httpOnly: true,
-		});
-		return res.json({ message: 'Successfully authenticated' });
+		})
+			.cookie('refresh_token', tokens.refreshToken, {
+				httpOnly: true,
+			})
+			.json(tokens.user)
+			.send();
 	}
 
 	@Get('alive')
 	async getAlive(@Req() req) {
-		console.log(req.cookies);
 		return this._service.getAlive();
 	}
 }
