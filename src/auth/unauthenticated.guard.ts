@@ -8,7 +8,6 @@ export class UnauthenticatedGuard implements CanActivate {
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
-		console.log(request.cookies);
 		return !(await lastValueFrom<boolean>(this._authService.isLoggedIn(request.cookies.access_token)));
 	}
 }
