@@ -18,18 +18,18 @@ export class TestService {
 	}
 
 	async sumNumbers(data: Array<number>): Promise<Observable<number>> {
-		return this.testServiceClientService.send<number>('sum', data);
+		return this.testServiceClientService.send<number>({cmd: 'sum'}, data);
 	}
 
 	async getItems(): Promise<Observable<number>> {
-		return this.testServiceClientService.send<number>('getItems', '');
+		return this.testServiceClientService.send<number>({cmd: 'getItems'}, '');
 	}
 
 	async postItem(): Promise<Observable<number>> {
-		return this.testServiceClientService.send<number>('postItem', '');
+		return this.testServiceClientService.send<number>({cmd: 'postItem'}, '');
 	}
 
 	async getAlive(): Promise<Observable<string>> {
-		return this.testServiceClientService.send<string>('alive', '');
+		return this.testServiceClientService.send<string>({cmd: 'alive'}, '');
 	}
 }
