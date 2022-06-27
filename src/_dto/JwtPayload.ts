@@ -6,6 +6,7 @@ export interface JwtPayload {
 	email: string;
 	username: string;
 	role: RolesTypeEnum;
+	birthDate: Date;
 	createdAt: Date;
 	isDev: boolean;
 	isRestaurant: boolean;
