@@ -1,4 +1,4 @@
-import { RolesTypeEnum } from '../_enums/roles-type-enum';
+import { RolesTypeEnum } from '../_enums/roles-type.enum';
 
 export interface JwtPayload {
 	sub: number;
