@@ -2,25 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import { config } from '../config';
-
-const deliverObject = {
-    globalUserId: "124",
-    firstName: "firstName",
-    lastName: "lastName",
-    phoneNumber: "phoneNumber",
-    birthDate: "2012-04-23T18:25:43.511Z",
-    termsOfUse: true,
-    location: {
-        name: "name",
-        address: "address",
-        lat: 5.89898,
-        lng: 4.90898,
-    },
-    patronageCode: "patronageCode",
-    notification: true,
-    movingRadius: true,
-}
-
+import {IDeliver} from "./deliver.controller";
 
 @Injectable()
 export class DeliverService {
@@ -40,8 +22,8 @@ export class DeliverService {
         return this.deliverMS.send<string>({cmd: 'alive'}, '');
     }
 
-    async createDeliver(): Promise<Observable<string>> {
-        return this.deliverMS.send<string>({cmd: 'createDeliver'}, JSON.stringify(deliverObject));
+    async createDeliver(data: IDeliver): Promise<Observable<string>> {
+        return this.deliverMS.send<string>({cmd: 'createDeliver'}, JSON.stringify(data));
     }
 
     async getDeliver(globalUserId: number): Promise<Observable<string>> {
