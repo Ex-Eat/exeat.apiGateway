@@ -24,4 +24,12 @@ export class ClientService {
 	async getAlive(): Promise<Observable<string>> {
 		return this.clientMS.send<string>({ cmd: 'alive' }, '');
 	}
+
+	async create(data): Promise<Observable<string>> {
+        return this.clientMS.send<string>({ cmd: 'postItem' }, '');
+    }
+
+    async findAll(): Promise<Observable<string[]>> {
+        return this.clientMS.send<string[]>({ cmd: 'getItems' }, '');
+    }
 }
