@@ -2,9 +2,9 @@ import { Body, Injectable } from '@nestjs/common';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import { config } from '../config';
-import { ICreateRestaurantDto, IUpdateRestaurantDto } from 'src/_dto/IRestaurantDto';
-import { CreateArticleDto, UpdateArticleDto } from 'src/_dto/IArticleDto';
-import { CreateMenuDto } from 'src/_dto/IMenuDto';
+import {ICreateRestaurantDto, IRestaurantDto, IUpdateRestaurantDto} from 'src/_dto/IRestaurantDto';
+import {CreateArticleDto, IArticleDto, UpdateArticleDto} from 'src/_dto/IArticleDto';
+import {CreateMenuDto, IMenuDto} from 'src/_dto/IMenuDto';
 
 @Injectable()
 export class RestaurantService {
@@ -20,81 +20,79 @@ export class RestaurantService {
 		});
 	}
 
-	async getAllRestaurant(): Promise<Observable<string>> {
+	getAllRestaurant(): Observable<string> {
 		return this.restaurantMS.send<string>({ cmd: 'restaurant/findall' }, '');
 	}
 
-	async getRestaurantById(id: number): Promise<Observable<string>> {
-		return this.restaurantMS.send<string>({ cmd: 'restaurant/findone' }, { id });
+	getRestaurantById(id: string): Observable<IRestaurantDto> {
+		return this.restaurantMS.send<IRestaurantDto>({ cmd: 'restaurant/findone' }, { id });
 	}
 
-	async getRestaurantsOfUser(user: any): Promise<Observable<string>> {
-		console.log(user);
+	getRestaurantsOfUser(user: any): Observable<string> {
 		return this.restaurantMS.send<string>({ cmd: 'restaurant/findallbyuser' }, { user });
 	}
 
-	async createRestaurant(restaurant: ICreateRestaurantDto, user: any): Promise<Observable<string>> {
+	createRestaurant(restaurant: ICreateRestaurantDto, user: any): Observable<string> {
 		return this.restaurantMS.send<string>({ cmd: 'restaurant/create' }, { restaurant, user });
 	}
 
-	async updateRestaurant(
+	updateRestaurant(
 		id: number,
 		restaurant: IUpdateRestaurantDto,
 		authorization: string,
-	): Promise<Observable<string>> {
+	): Observable<string> {
 		return this.restaurantMS.send<string>({ cmd: 'restaurant/update' }, { id, restaurant, authorization });
 	}
 
-	async deleteRestaurant(id: number, authorization: string): Promise<Observable<string>> {
+	deleteRestaurant(id: number, authorization: string): Observable<string> {
 		return this.restaurantMS.send<string>({ cmd: 'restaurant/delete' }, { id, authorization });
 	}
 
 	// ********** Articles ************
 
-	async getArticles(id: string): Promise<Observable<string>> {
-		return this.restaurantMS.send<string>({ cmd: 'article/findallfromrestaurant' }, { id });
+	getArticles(restaurantId: string): Observable<IArticleDto[]> {
+		return this.restaurantMS.send<IArticleDto[]>({ cmd: 'article/findallfromrestaurant' }, { restaurantId });
 	}
 
-	async getArticleById(id: string): Promise<Observable<string>> {
-		return this.restaurantMS.send<string>({ cmd: 'article/findone' }, { id });
+	getArticleById(id: string): Observable<IArticleDto[]> {
+		return this.restaurantMS.send<IArticleDto[]>({ cmd: 'article/findone' }, { id });
 	}
 
-	async createArticle(restaurantId, article: CreateArticleDto): Promise<Observable<string>> {
-		console.log(restaurantId);
+	createArticle(restaurantId, article: CreateArticleDto): Observable<string> {
 		return this.restaurantMS.send<string>({ cmd: 'article/create' }, { restaurantId, article });
 	}
 
-	async updateArticle(id: string, article: UpdateArticleDto) {
+	updateArticle(id: string, article: UpdateArticleDto) {
 		return this.restaurantMS.send<string>({ cmd: 'article/update' }, { id, article });
 	}
 
-	async deleteArticle(id: number, authorization: string): Promise<Observable<string>> {
+	deleteArticle(id: number, authorization: string): Observable<string> {
 		return this.restaurantMS.send<string>({ cmd: 'article/delete' }, { id, authorization });
 	}
 
-	async getAlive(): Promise<Observable<string>> {
+	getAlive(): Observable<string> {
 		return this.restaurantMS.send<string>({ cmd: 'alive' }, '');
 	}
 
 	// ********** Menus ************
 
-	async createMenu(restaurantId: string, menu: CreateMenuDto, authorization: string): Promise<Observable<string>> {
+	createMenu(restaurantId: string, menu: CreateMenuDto, authorization: string): Observable<string> {
 		return this.restaurantMS.send<string>({ cmd: 'menu/create' }, { restaurantId, menu });
 	}
 
-	async getMenus(restaurantId: string): Promise<Observable<string>> {
-		return this.restaurantMS.send<string>({ cmd: 'menu/findallfromrestaurant' }, { restaurantId });
+	getMenus(restaurantId: string): Observable<IMenuDto[]> {
+		return this.restaurantMS.send<IMenuDto[]>({ cmd: 'menu/findallfromrestaurant' }, { restaurantId });
 	}
 
-	async getMenuById(id: string): Promise<Observable<string>> {
+	getMenuById(id: string): Observable<string> {
 		return this.restaurantMS.send<string>({ cmd: 'menu/findone' }, { id });
 	}
 
-	async updateMenu(id: string, menu: CreateMenuDto, authorization: string): Promise<Observable<string>> {
+	updateMenu(id: string, menu: CreateMenuDto, authorization: string): Observable<string> {
 		return this.restaurantMS.send<string>({ cmd: 'menu/update' }, { id, menu });
 	}
 
-	async deleteMenu(id: string, authorization: string): Promise<Observable<string>> {
+	deleteMenu(id: string, authorization: string): Observable<string> {
 		return this.restaurantMS.send<string>({ cmd: 'menu/delete' }, { id });
 	}
 }

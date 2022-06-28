@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Param, Post, Headers, UseGuards, Put, Delete, Request } from '@nestjs/common';
-import { lastValueFrom } from 'rxjs';
+import {Body, Controller, Get, Param, Post, Headers, UseGuards, Put, Delete, Request, Query} from '@nestjs/common';
+import {lastValueFrom, Observable} from 'rxjs';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
-import { ICreateRestaurantDto, IUpdateRestaurantDto } from 'src/_dto/IRestaurantDto';
+import {ICreateRestaurantDto, IRestaurantDto, IUpdateRestaurantDto} from 'src/_dto/IRestaurantDto';
 import { RestaurantService } from './restaurant.service';
 
 @Controller('restaurant')
@@ -32,12 +32,12 @@ export class RestaurantController {
 
 	/**
 	 * Returns a restaurant by its id
-	 * @param params {id}
-	 * @returns {Observable<string>}
+	 * @param id string
+	 * @returns {Promise<IRestaurantDto>}
 	 */
 	@Get('/:id')
-	async getRestaurantById(@Param() params) {
-		return this._service.getRestaurantById(params.id);
+	async getRestaurantById(@Param('id') id: string): Promise<IRestaurantDto> {
+		return await lastValueFrom(this._service.getRestaurantById(id));
 	}
 
 	/**
@@ -92,18 +92,18 @@ export class RestaurantController {
 	 */
 	@Post(':id/article/create')
 	@UseGuards(AuthenticatedGuard)
-	async createArticle(@Body() data, @Param() params) {
-		return this._service.createArticle(params.id, data);
+	async createArticle(@Body() article, @Param('id') id: string): Promise<string> {
+		return await lastValueFrom(this._service.createArticle(id, article));
 	}
 
 	/**
 	 * Get article from Id
 	 * @param id The id of the article
-	 * @returns {Observable<string>}
+	 * @returns {Promise<IRestaurantDto>}
 	 */
 	@Get('article/:id')
-	async getArticleById(@Param() params) {
-		return this._service.getArticleById(params.id);
+	async getArticleById(@Param('id') id: string) {
+		return this._service.getArticleById(id);
 	}
 
 	/**
