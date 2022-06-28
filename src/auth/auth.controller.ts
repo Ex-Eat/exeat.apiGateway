@@ -45,12 +45,12 @@ export class AuthController {
     }
 
     @Post('signup')
+    @UseGuards(UnauthenticatedGuard)
     async signup(
         @Body() user: ICreateUserDto,
-        @Headers('authorization') authorization: string,
         @Res({passthrough: true}) res,
     ): Promise<Partial<ITokenDto>> {
-        const tokens: ITokenDto = await lastValueFrom<ITokenDto>(this._service.signup(user, authorization));
+        const tokens: ITokenDto = await lastValueFrom<ITokenDto>(this._service.signup(user));
         res.cookie('access_token', tokens.accessToken, {
             httpOnly: true,
         });
