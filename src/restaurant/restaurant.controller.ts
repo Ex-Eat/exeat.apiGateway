@@ -43,7 +43,7 @@ export class RestaurantController {
 	/**
 	 * Creates a new restaurant in the database.
 	 * To access this route you need to be authenticated.
-	 * @param restaurant {name: string, address: string, phone_number: string, professional_email: string, description: string, terms_of_use: boolean, keywords: string[]}
+	 * @param restaurant {name: string, address: string, phoneNumber: string, professionalEmail: string, description: string, termsOfUse: boolean, keywords: string[]}
 	 * @returns restaurant
 	 */
 	@Post('/create') // TODO: Add the ownerID to the restaurant
@@ -58,7 +58,7 @@ export class RestaurantController {
 	 * Updates a restaurant in the database.
 	 * To access this route you need to be authenticated.
 	 * @param id
-	 * @param restaurant { name: string, address: string, phone_number: string, professional_email: string, description: string, keywords: string[]}
+	 * @param restaurant { name: string, address: string, phoneNumber: string, professionalEmail: string, description: string, keywords: string[]}
 	 * @returns restaurant
 	 */
 	@Put('/:id')
@@ -82,6 +82,8 @@ export class RestaurantController {
 		return this._service.deleteRestaurant(params.id, authorization);
 	}
 
+	// *************** ARTICLES ***************
+
 	/**
 	 * Creates a new article for a restaurant in the database.
 	 * @param id The id of the restaurant
@@ -91,7 +93,17 @@ export class RestaurantController {
 	@Post(':id/article/create')
 	@UseGuards(AuthenticatedGuard)
 	async createArticle(@Body() data, @Param() params) {
-		return this._service.createArticle(data, params.id);
+		return this._service.createArticle(params.id, data);
+	}
+
+	/**
+	 * Get article from Id
+	 * @param id The id of the article
+	 * @returns {Observable<string>}
+	 */
+	@Get('article/:id')
+	async getArticleById(@Param() params) {
+		return this._service.getArticleById(params.id);
 	}
 
 	/**
@@ -102,6 +114,18 @@ export class RestaurantController {
 	@Get('/:id/articles')
 	async getArticles(@Param() params) {
 		return this._service.getArticles(params.id);
+	}
+
+	/**
+	 * Update an article
+	 * @param id The id of the article
+	 * @param article {name: string, description: string, price: number}
+	 * @returns {Observable<string>}
+	 */
+	@Put('article/:id')
+	@UseGuards(AuthenticatedGuard)
+	async updateArticle(@Param() params, @Body() data, @Headers('authorization') authorization: string) {
+		return this._service.updateArticle(params.id, data);
 	}
 
 	/**
@@ -119,5 +143,62 @@ export class RestaurantController {
 	async getAlive() {
 		// We should check if the user is connected
 		return this._service.getAlive();
+	}
+
+	// ******************** MENUS ***********************
+
+	/**
+	 * Creates a new menu for a restaurant with included articles
+	 * @param id The id of the restaurant
+	 * @param menu {name: string, articles: string[], price: number}
+	 * @returns {Observable<string>}
+	 */
+	@Post('/:id/menu/create')
+	@UseGuards(AuthenticatedGuard)
+	async createMenu(@Param() params, @Body() data, @Headers('authorization') authorization: string) {
+		return this._service.createMenu(params.id, data, authorization);
+	}
+
+	/**
+	 * Get all menus for a given restaurant
+	 * @param id The id of the restaurant
+	 * @returns {Observable<string>}
+	 */
+	@Get('/:id/menus')
+	async getMenus(@Param() params) {
+		return this._service.getMenus(params.id);
+	}
+
+	/**
+	 * Get a menu by its id
+	 * @param id The id of the menu
+	 * @returns {Observable<string>}
+	 */
+	@Get('/menu/:id')
+	async getMenuById(@Param() params) {
+		return this._service.getMenuById(params.id);
+	}
+
+	/**
+	 * Update a menu
+	 * @param id The id of the menu
+	 * @param menu {name: string, articles: string[], price: number}
+	 * @returns {Observable<string>}
+	 */
+	@Put('/menu/:id')
+	@UseGuards(AuthenticatedGuard)
+	async updateMenu(@Param() params, @Body() data, @Headers('authorization') authorization: string) {
+		return this._service.updateMenu(params.id, data, authorization);
+	}
+
+	/**
+	 * Delete a menu
+	 * @param id The id of the menu
+	 * @returns {Observable<string>}
+	 */
+	@Delete('/menu/:id')
+	@UseGuards(AuthenticatedGuard)
+	async deleteMenu(@Param() params, @Headers('authorization') authorization: string) {
+		return this._service.deleteMenu(params.id, authorization);
 	}
 }

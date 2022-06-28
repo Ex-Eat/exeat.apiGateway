@@ -5,7 +5,7 @@ export interface ICreateRestaurantDto {
 	professionalEmail: string;
 	keywords: string[];
 	description: string;
-	terms_of_use: boolean;
+	termsOfUse: boolean;
 }
 
 export interface IUpdateRestaurantDto {
