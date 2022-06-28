@@ -22,6 +22,8 @@ export class DeliverService {
         return this.deliverMS.send<string>({cmd: 'alive'}, '');
     }
 
+    // CRUD DELIVER
+
     async createDeliver(data: IDeliver): Promise<Observable<string>> {
         return this.deliverMS.send<string>({cmd: 'createDeliver'}, JSON.stringify(data));
     }
@@ -48,5 +50,11 @@ export class DeliverService {
         }
 
         return this.deliverMS.send<string>({cmd: 'deleteDeliver'}, JSON.stringify(data));
+    }
+
+    // GEOCODING
+
+    async geocoding(data: string): Promise<Observable<string>> {
+        return this.deliverMS.send<string>({cmd: 'geocoding'}, JSON.stringify(data));
     }
 }
