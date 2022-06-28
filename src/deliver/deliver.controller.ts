@@ -1,11 +1,14 @@
-import {Body, Controller, Delete, Get, Param, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, Req, Res, UseGuards} from '@nestjs/common';
 import { DeliverService } from './deliver.service';
+import {AuthenticatedGuard} from "../auth/authenticated.guard";
+import {DeliverGuard} from "./deliver.guard";
 
 @Controller('deliver')
 export class DeliverController {
     constructor(private readonly _service: DeliverService) {}
 
     @Post('')
+    @UseGuards(AuthenticatedGuard)
     async create(@Body('data') data: IDeliver) {
         // We should check if the user is connected
         // check if he is posting his own profile
@@ -18,13 +21,25 @@ export class DeliverController {
     }
 
     @Get(':globalUserId')
+    @UseGuards(AuthenticatedGuard, DeliverGuard)
     async get(@Param('globalUserId') globalUserId: string) {
         // We should check if the user is connected
         // check if he is getting his own profile
+
         return this._service.getDeliver(+globalUserId);
     }
 
+    @Get('geocoding')
+    @UseGuards(AuthenticatedGuard, DeliverGuard)
+    async geocode(@Body('data') data) {
+        // We should check if the user is connected
+        // check if he is getting his own profile
+
+        return this._service.geocoding(data);
+    }
+
     @Post(':globalUserId')
+    @UseGuards(AuthenticatedGuard, DeliverGuard)
     async update(@Param('globalUserId') globalUserId: string, @Body('data') data) {
         // We should check if the user is connected
         // check if he is update his own profile
@@ -32,30 +47,16 @@ export class DeliverController {
     }
 
     @Delete(':globalUserId')
-    async delete(@Param('globalUserId') globalUserId: string) {
+    @UseGuards(AuthenticatedGuard, DeliverGuard)
+    async delete(
+        @Req() req,
+        @Res() res,
+        @Param('globalUserId') globalUserId: string
+    ) {
         // We should check if the user is connected
         // check if he is update his own profile
         return this._service.deleteDeliver(+globalUserId);
     }
-}
-
-
-const deliverObject = {
-    globalUserId: "124",
-    firstName: "firstName",
-    lastName: "lastName",
-    phoneNumber: "phoneNumber",
-    birthDate: "2012-04-23T18:25:43.511Z",
-    termsOfUse: true,
-    location: {
-        name: "name",
-        address: "address",
-        lat: 5.89898,
-        lng: 4.90898,
-    },
-    patronageCode: "patronageCode",
-    notification: true,
-    movingRadius: true,
 }
 
 export interface IDeliver {
