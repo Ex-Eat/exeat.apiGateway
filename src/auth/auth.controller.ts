@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Post, Headers, Res, Req, UseGuards } from '@nestjs/common';
+import {Body, Controller, Get, Post, Headers, Res, Req, UseGuards, UnauthorizedException} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ICreateUserDto, IUserDto } from '../_dto/IUserDto';
 import { lastValueFrom } from 'rxjs';
 import { ITokenDto } from '../_dto/ITokenDto';
 import { UnauthenticatedGuard } from './unauthenticated.guard';
 import { AuthenticatedGuard } from './authenticated.guard';
+import dayjs from "dayjs";
 
 @Controller('auth')
 export class AuthController {
@@ -22,6 +23,15 @@ export class AuthController {
 		}
 	}
 
+	@Post('update')
+	@UseGuards(AuthenticatedGuard)
+	async update(@Req() req, @Body('data') data: string) {
+		if (req.user.id == data['id']) { return this._service.update(data); }
+		return UnauthorizedException
+
+	}
+
+
 	@Post('login')
 	@UseGuards(UnauthenticatedGuard)
 	async login(@Body('email') email: string, @Body('password') password: string, @Res({ passthrough: true }) res) {
@@ -35,6 +45,8 @@ export class AuthController {
 			.json(tokens.user)
 			.send();
 	}
+
+
 
 	@Get('logout')
 	@UseGuards(AuthenticatedGuard)
