@@ -28,6 +28,10 @@ export class RestaurantService {
 		return this.restaurantMS.send<string>({ cmd: 'restaurant/findone' }, { id });
 	}
 
+	async searchRestaurants(query: string): Promise<Observable<string>> {
+		return this.restaurantMS.send<string>({ cmd: 'restaurant/search' }, { query });
+	}
+
 	async getRestaurantsOfUser(user: any): Promise<Observable<string>> {
 		console.log(user);
 		return this.restaurantMS.send<string>({ cmd: 'restaurant/findallbyuser' }, { user });
