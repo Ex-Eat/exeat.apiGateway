@@ -5,6 +5,7 @@ import { lastValueFrom } from 'rxjs';
 import { ITokenDto } from '../_dto/ITokenDto';
 import { UnauthenticatedGuard } from './unauthenticated.guard';
 import { AuthenticatedGuard } from './authenticated.guard';
+import {HttpErrorsEnum} from "../_enums/http-errors.enum";
 
 @Controller('auth')
 export class AuthController {
@@ -38,11 +39,16 @@ export class AuthController {
 
 	}
 
-
 	@Post('login')
 	@UseGuards(UnauthenticatedGuard)
-	async login(@Body('email') email: string, @Body('password') password: string, @Res({ passthrough: true }) res) {
+	async login(@Body('email') email: string,
+                @Body('password') password: string,
+                @Body('app') app: 'client' | 'deliverer' | 'restaurant',
+                @Res({ passthrough: true }) res) {
 		const tokens = await lastValueFrom<ITokenDto>(this._service.login(email, password));
+        if (app && app === "client" && !tokens.user.isClient)
+            throw new UnauthorizedException(HttpErrorsEnum.WRONG_APPLICATION);
+
 		res.cookie('access_token', tokens.accessToken, {
 			httpOnly: true,
 		})
