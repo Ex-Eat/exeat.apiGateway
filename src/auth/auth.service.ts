@@ -40,12 +40,11 @@ export class AuthService {
 		);
 	}
 
-	signup(user: ICreateUserDto, authorization: string): Observable<ITokenDto> {
+	signup(user: ICreateUserDto): Observable<ITokenDto> {
 		return this.authMS.send<ITokenDto>(
 			{ cmd: 'user/create' },
 			{
 				user,
-				authorization,
 			},
 		);
 	}
