@@ -1,18 +1,34 @@
-import {Body, Controller, Delete, Get, Param, Post, Req, Res, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, Req, Res, UnauthorizedException, UseGuards} from '@nestjs/common';
 import { DeliverService } from './deliver.service';
 import {AuthenticatedGuard} from "../auth/authenticated.guard";
 import {DeliverGuard} from "./deliver.guard";
+import {AuthService} from "../auth/auth.service";
+import {lastValueFrom} from "rxjs";
 
 @Controller('deliver')
 export class DeliverController {
-    constructor(private readonly _service: DeliverService) {}
+    constructor(
+        private _service: DeliverService,
+        private authService: AuthService
+    ) {}
 
     @Post('create')
     @UseGuards(AuthenticatedGuard)
-    async create(@Body('data') data: IDeliver) {
+    async create(@Body('data') data: IDeliver, @Req() req, @Res() res) {
         // We should check if the user is connected
         // check if he is posting his own profile
-        return this._service.createDeliver(data);
+        if (req.user.id != data['globalUserId']) { return UnauthorizedException }
+        await this._service.createDeliver(data);
+
+        const tokens =  await lastValueFrom(this.authService.update({id: data['globalUserId'], isDeliverer: true}));
+        res.cookie('access_token', tokens.accessToken, {
+            httpOnly: true,
+        })
+            .cookie('refresh_token', tokens.refreshToken, {
+                httpOnly: true,
+            })
+            .json(tokens.user)
+            .send();
     }
 
     @Get('alive')

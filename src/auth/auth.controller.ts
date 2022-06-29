@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Headers, Res, Req, UseGuards } from '@nestjs/common';
+import {Body, Controller, Get, Post, Headers, Res, Req, UseGuards, UnauthorizedException} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ICreateUserDto, IUserDto } from '../_dto/IUserDto';
 import { lastValueFrom } from 'rxjs';
@@ -22,6 +22,23 @@ export class AuthController {
 		}
 	}
 
+	@Post('update')
+	@UseGuards(AuthenticatedGuard)
+	async update(@Req() req, @Res() res, @Body('data') data: string) {
+		if (req.user.id != data['id']) {return UnauthorizedException}
+		const tokens =  await lastValueFrom(this._service.update(data));
+		res.cookie('access_token', tokens.accessToken, {
+			httpOnly: true,
+		})
+			.cookie('refresh_token', tokens.refreshToken, {
+				httpOnly: true,
+			})
+			.json(tokens.user)
+			.send();
+
+	}
+
+
 	@Post('login')
 	@UseGuards(UnauthenticatedGuard)
 	async login(@Body('email') email: string, @Body('password') password: string, @Res({ passthrough: true }) res) {
@@ -35,6 +52,8 @@ export class AuthController {
 			.json(tokens.user)
 			.send();
 	}
+
+
 
 	@Get('logout')
 	@UseGuards(AuthenticatedGuard)

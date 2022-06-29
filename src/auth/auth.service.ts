@@ -49,6 +49,10 @@ export class AuthService {
 		);
 	}
 
+	update(data: any): Observable<ITokenDto> {
+		return this.authMS.send<ITokenDto>({ cmd: 'user/update' }, data);
+	}
+
 	isLoggedIn(accessToken: string): Observable<boolean> {
 		return this.authMS.send<boolean>({ cmd: 'auth/isLoggedIn' }, { accessToken });
 	}
