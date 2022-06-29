@@ -5,7 +5,6 @@ import { lastValueFrom } from 'rxjs';
 import { ITokenDto } from '../_dto/ITokenDto';
 import { UnauthenticatedGuard } from './unauthenticated.guard';
 import { AuthenticatedGuard } from './authenticated.guard';
-import dayjs from "dayjs";
 
 @Controller('auth')
 export class AuthController {
@@ -25,9 +24,17 @@ export class AuthController {
 
 	@Post('update')
 	@UseGuards(AuthenticatedGuard)
-	async update(@Req() req, @Body('data') data: string) {
-		if (req.user.id == data['id']) { return this._service.update(data); }
-		return UnauthorizedException
+	async update(@Req() req, @Res() res, @Body('data') data: string) {
+		if (req.user.id != data['id']) {return UnauthorizedException}
+		const tokens =  await lastValueFrom(this._service.update(data));
+		res.cookie('access_token', tokens.accessToken, {
+			httpOnly: true,
+		})
+			.cookie('refresh_token', tokens.refreshToken, {
+				httpOnly: true,
+			})
+			.json(tokens.user)
+			.send();
 
 	}
 
