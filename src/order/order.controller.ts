@@ -1,12 +1,26 @@
-import {Controller, Get, Post, Put} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    ForbiddenException,
+    Get,
+    Post,
+    Put,
+    Req,
+    UnauthorizedException,
+    UseGuards
+} from '@nestjs/common';
 import {OrderService} from "./order.service";
 import {lastValueFrom} from "rxjs";
 import {ICreateOrderDto, IOrderDto, IOrderSearchDto, IUpdateOrderDto} from "./order.dto";
+import {AuthenticatedGuard} from "../auth/authenticated.guard";
+import {ClientGuard} from "../client/client.guard";
+import {ClientService} from "../client/client.service";
 
 @Controller('order')
 export class OrderController {
 
-    constructor(private _service: OrderService) {
+    constructor(private _service: OrderService,
+                private _clientService: ClientService) {
     }
 
     @Get()
@@ -20,8 +34,13 @@ export class OrderController {
     }
 
     @Post()
-    async create(data: ICreateOrderDto) {
-        return this._service.create(data);
+    @UseGuards(AuthenticatedGuard, ClientGuard)
+    async create(@Body() data: ICreateOrderDto, @Req() req) {
+        if (typeof req.user !== "string") {
+            const client = await lastValueFrom(this._clientService.getClientByGlobalId(req.user.id));
+            return this._service.create(data, client);
+        }
+        throw new ForbiddenException();
     }
 
     @Put()

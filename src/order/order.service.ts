@@ -3,6 +3,8 @@ import {ClientProxy, ClientProxyFactory, Transport} from "@nestjs/microservices"
 import {config} from "../config";
 import {Observable} from "rxjs";
 import {ICreateOrderDto, IOrderDto, IOrderSearchDto, IUpdateOrderDto} from "./order.dto";
+import {IUserDto} from "../_dto/IUserDto";
+import {IClientDto} from "../_dto/IClientDto";
 
 @Injectable()
 export class OrderService {
@@ -27,8 +29,8 @@ export class OrderService {
         return this.orderMS.send<IOrderDto>({ cmd: 'order/one' }, id)
     }
 
-    create(data: ICreateOrderDto): Observable<IOrderDto> {
-        return this.orderMS.send<IOrderDto>({ cmd: 'order/create' }, data)
+    create(data: ICreateOrderDto, client: IClientDto): Observable<IOrderDto> {
+        return this.orderMS.send<IOrderDto>({ cmd: 'order/create' }, { cart: data, client })
     }
 
     update(data: IUpdateOrderDto): Observable<IOrderDto> {

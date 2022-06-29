@@ -23,6 +23,11 @@ export class ClientController {
 		return this._service.getClientById(param.id);
 	}
 
+	@Get('/global/:id')
+	async getClientByGlobalId(@Param('id') id: number) {
+		return this._service.getClientByGlobalId(id);
+	}
+
 	@Post('/createUser')
 	async create(@Body() client: ICreateClientDto, @Request() req) {
 		// We should check if the user is connected
