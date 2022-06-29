@@ -7,7 +7,7 @@ import {DeliverGuard} from "./deliver.guard";
 export class DeliverController {
     constructor(private readonly _service: DeliverService) {}
 
-    @Post('')
+    @Post('create')
     @UseGuards(AuthenticatedGuard)
     async create(@Body('data') data: IDeliver) {
         // We should check if the user is connected
@@ -29,12 +29,11 @@ export class DeliverController {
         return this._service.getDeliver(+globalUserId);
     }
 
-    @Get('geocoding')
-    @UseGuards(AuthenticatedGuard, DeliverGuard)
+    @Post('geocoding')
+    @UseGuards(AuthenticatedGuard)
     async geocode(@Body('data') data) {
         // We should check if the user is connected
         // check if he is getting his own profile
-
         return this._service.geocoding(data);
     }
 
@@ -64,12 +63,10 @@ export interface IDeliver {
     firstName: string;
     lastName: string;
     phoneNumber: string;
-    birthDate: Date;
     termsOfUse: boolean;
     location: ILocation;
     patronageCode: string;
     notification: boolean;
-    movingRadius: number;
 }
 
 export interface ILocation {
