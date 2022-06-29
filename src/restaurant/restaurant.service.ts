@@ -28,7 +28,11 @@ export class RestaurantService {
 		return this.restaurantMS.send<IRestaurantDto>({ cmd: 'restaurant/findone' }, { id });
 	}
 
-	getRestaurantsOfUser(user: any): Observable<string> {
+	async searchRestaurants(query: string): Promise<Observable<string>> {
+		return this.restaurantMS.send<string>({ cmd: 'restaurant/search' }, { query });
+	}
+
+	async getRestaurantsOfUser(user: any): Promise<Observable<string>> {
 		return this.restaurantMS.send<string>({ cmd: 'restaurant/findallbyuser' }, { user });
 	}
 

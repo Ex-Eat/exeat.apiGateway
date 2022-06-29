@@ -1,5 +1,5 @@
-import {Body, Controller, Get, Param, Post, Headers, UseGuards, Put, Delete, Request, Query} from '@nestjs/common';
-import {lastValueFrom, Observable} from 'rxjs';
+import { Body, Controller, Get, Param, Post, Headers, UseGuards, Put, Delete, Request, Query } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
 import {ICreateRestaurantDto, IRestaurantDto, IUpdateRestaurantDto} from 'src/_dto/IRestaurantDto';
@@ -28,6 +28,16 @@ export class RestaurantController {
 	async getRestaurants(@Request() req) {
 		const user = await lastValueFrom(this._authService.getLoggedUser(req.cookies.access_token));
 		return this._service.getRestaurantsOfUser(user);
+	}
+
+	/**
+	 * Search restanrants by name, description and keywords
+	 * @param params query
+	 * @returns {Observable<string>}
+	 */
+	@Get('/search')
+	async searchRestaurants(@Query() query) {
+		return this._service.searchRestaurants(query.query);
 	}
 
 	/**
