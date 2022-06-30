@@ -4,7 +4,7 @@ import {
     ForbiddenException,
     Get,
     Post,
-    Put,
+    Put, Query,
     Req,
     UnauthorizedException,
     UseGuards
@@ -26,7 +26,7 @@ export class OrderController {
     }
 
     @Get()
-    async orders(search?: IOrderSearchDto): Promise<IOrderDto[]> {
+    async orders(@Query() search?: IOrderSearchDto): Promise<IOrderDto[]> {
         return await lastValueFrom(this._service.findAll(search));
     }
 

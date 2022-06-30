@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { config } from '../config';
-import { Observable } from 'rxjs';
+import {lastValueFrom, Observable} from 'rxjs';
 import { ICreateUserDto, IUserDto } from '../_dto/IUserDto';
 import { ITokenDto } from '../_dto/ITokenDto';
 import { JwtPayload } from '../_dto/JwtPayload';
@@ -58,7 +58,7 @@ export class AuthService {
 	}
 
 	getLoggedUser(accessToken: string): Observable<(IUserDto & { sub: number }) | string> {
-		return this.authMS.send<JwtPayload | string>({ cmd: 'auth/getLoggedUser' }, { accessToken });
+		return this.authMS.send<JwtPayload & { sub: number } | string>({ cmd: 'auth/getLoggedUser' }, { accessToken });
 	}
 
 	refreshToken(accessToken: string, refreshToken: string): Observable<ITokenDto> {
