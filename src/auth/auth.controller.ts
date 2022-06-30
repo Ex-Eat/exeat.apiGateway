@@ -6,7 +6,9 @@ import { ITokenDto } from '../_dto/ITokenDto';
 import { UnauthenticatedGuard } from './unauthenticated.guard';
 import { AuthenticatedGuard } from './authenticated.guard';
 import {HttpErrorsEnum} from "../_enums/http-errors.enum";
+import {ApiTags} from "@nestjs/swagger";
 
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
 	constructor(private _service: AuthService) {}

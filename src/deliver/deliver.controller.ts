@@ -4,7 +4,9 @@ import {AuthenticatedGuard} from "../auth/authenticated.guard";
 import {DeliverGuard} from "./deliver.guard";
 import {AuthService} from "../auth/auth.service";
 import {lastValueFrom} from "rxjs";
+import {ApiTags} from "@nestjs/swagger";
 
+@ApiTags('Deliver')
 @Controller('deliver')
 export class DeliverController {
     constructor(

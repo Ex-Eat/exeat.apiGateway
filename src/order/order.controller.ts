@@ -15,7 +15,9 @@ import {ICreateOrderDto, IOrderDto, IOrderSearchDto, IUpdateOrderDto} from "./or
 import {AuthenticatedGuard} from "../auth/authenticated.guard";
 import {ClientGuard} from "../client/client.guard";
 import {ClientService} from "../client/client.service";
+import {ApiTags} from "@nestjs/swagger";
 
+@ApiTags('Order')
 @Controller('order')
 export class OrderController {
 

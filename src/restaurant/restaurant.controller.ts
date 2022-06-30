@@ -4,7 +4,9 @@ import { AuthService } from 'src/auth/auth.service';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
 import {ICreateRestaurantDto, IRestaurantDto, IUpdateRestaurantDto} from 'src/_dto/IRestaurantDto';
 import { RestaurantService } from './restaurant.service';
+import {ApiTags} from "@nestjs/swagger";
 
+@ApiTags('Restaurant')
 @Controller('restaurant')
 export class RestaurantController {
 	constructor(private _service: RestaurantService, private _authService: AuthService) {}
