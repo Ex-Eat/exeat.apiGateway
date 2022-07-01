@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { config } from '../config';
 import { Observable } from 'rxjs';
-import { ICreateUserDto } from '../_dto/IUserDto';
+import { ICreateUserDto, IUserDto } from '../_dto/IUserDto';
 import { ITokenDto } from '../_dto/ITokenDto';
+import { JwtPayload } from '../_dto/JwtPayload';
+import { Jwt } from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -38,21 +40,32 @@ export class AuthService {
 		);
 	}
 
-	signup(user: ICreateUserDto, authorization: string): Observable<ITokenDto> {
+	signup(user: ICreateUserDto): Observable<ITokenDto> {
 		return this.authMS.send<ITokenDto>(
 			{ cmd: 'user/create' },
 			{
 				user,
-				authorization,
 			},
 		);
+	}
+
+	update(data: any): Observable<ITokenDto> {
+		return this.authMS.send<ITokenDto>({ cmd: 'user/update' }, data);
 	}
 
 	isLoggedIn(accessToken: string): Observable<boolean> {
 		return this.authMS.send<boolean>({ cmd: 'auth/isLoggedIn' }, { accessToken });
 	}
 
-	getLoggedUser(accessToken: string): Observable<object> {
-		return this.authMS.send<object>({ cmd: 'auth/getLoggedUser' }, { accessToken });
+	getLoggedUser(accessToken: string): Observable<(IUserDto & { sub: number }) | string> {
+		return this.authMS.send<JwtPayload | string>({ cmd: 'auth/getLoggedUser' }, { accessToken });
+	}
+
+	refreshToken(accessToken: string, refreshToken: string): Observable<ITokenDto> {
+		return this.authMS.send<ITokenDto>({ cmd: 'auth/refreshToken' }, { accessToken, refreshToken });
+	}
+
+	getAlive(): Observable<string> {
+		return this.authMS.send<string>({ cmd: 'alive' }, '');
 	}
 }
